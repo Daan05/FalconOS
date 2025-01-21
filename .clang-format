@@ -1,0 +1,14 @@
+
+---
+BasedOnStyle: WebKit
+---
+Language: Cpp
+DerivePointerAlignment: false
+PointerAlignment: Right
+UseTab: Never
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: false
+ColumnLimit: 80
+BreakBeforeBraces: Attach
+IndentWidth: 4
+---
