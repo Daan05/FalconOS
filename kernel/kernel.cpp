@@ -16,4 +16,13 @@ extern "C" void kernel_main(void) {
     printf("Falcon OS\n");
     printf("\n");
     printf("without a doubt the best OS. GNU/Linux shivvering rn\n");
+    printf("\n");
+    printf("Hello, World!\n");
+    printf("Character: %c\n", 'A');
+    printf("String: %s\n", "Test");
+    printf("Signed Int: %d\n", -123);
+    printf("Unsigned Int: %u\n", 456);
+    printf("Hexadecimal (lowercase): %x\n", 255);
+    printf("Hexadecimal (uppercase): %X\n", 255);
+    printf("Percent: %%\n");
 }
