@@ -1,4 +1,6 @@
 #include <kernel/tty.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <string.h>
 
 #include "vga.h"
@@ -27,7 +29,7 @@ void tty_initialize() {
 void tty_setcolor(uint8_t color) { terminal_color = color; }
 
 void tty_putentryat(char c, uint8_t color, size_t x, size_t y) {
-    const size_t index = y * VGA_WIDTH + x;
+    size_t const index = y * VGA_WIDTH + x;
     terminal_buffer[index] = vga_entry(c, color);
 }
 
@@ -43,6 +45,20 @@ void tty_putchar(char c) {
         terminal_column = 0;
         if (++terminal_row == VGA_HEIGHT)
             terminal_row = 0;
+    }
+}
+
+void tty_scroll() {
+    for (size_t y = 0; y < VGA_HEIGHT - 1; y++) {
+        for (size_t x = 0; x < VGA_WIDTH; x++) {
+            size_t const index = y * VGA_WIDTH + x;
+            terminal_buffer[index] = terminal_buffer[index + VGA_WIDTH];
+        }
+    }
+
+    for (size_t i = 0; i < VGA_WIDTH; i++) {
+        terminal_buffer[VGA_WIDTH * (VGA_HEIGHT - 1) + i]
+            = vga_entry(' ', terminal_color);
     }
 }
 
