@@ -1,7 +1,9 @@
+#include "kernel/io_ports.h"
 #include "kernel/tty.h"
 
 #include "vga.h"
 
+#include <stdint.h>
 #include <stdio.h>
 
 extern "C" void kernel_main(void) {
@@ -25,4 +27,10 @@ extern "C" void kernel_main(void) {
     printf("Hexadecimal (lowercase): %x\n", 255);
     printf("Hexadecimal (uppercase): %X\n", 255);
     printf("Percent: %%\n");
+
+    while (true) {
+        uint8_t scancode = inb(0x60);
+        if (scancode < 128)
+            tty_putchar(scancode + 'A');
+    }
 }
