@@ -43,6 +43,12 @@ void pic_remap() {
     // Mask all interrupts except IRQ0 (timer) and IRQ1 (keyboard)
     outb(0x21, 0xFC);
     outb(0xA1, 0xFF);
+
+    uint8_t mask = inb(0x21); // Read current PIC mask
+    mask |= 0x02;             // Set bit 1 to disable IRQ1 (keyboard)
+    outb(0x21, mask);         // Write back to PIC
+
+    outb(0x20, 0x20); // Send EOI to PIC (Master)
 }
 
 void __attribute__((naked)) isr_default() {
@@ -78,9 +84,7 @@ void idt_init() {
     }
 
     // Map IRQ0 (timer) to IDT entry 0x20
-    idt_set_gate(33, irq0);
-    // Map IRQ1 (keyboard) to IDT entry 0x21
-    idt_set_gate(32, irq1);
+    idt_set_gate(0x20, irq0);
 
     idt_set_gate(128, isr128);
     idt_set_gate(129, isr129);

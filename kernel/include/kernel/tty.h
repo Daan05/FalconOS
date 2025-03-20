@@ -11,9 +11,11 @@ extern "C" {
 void tty_initialize();
 void tty_setcolor(uint8_t color);
 void tty_putchar(char c);
+void tty_unputchar();
 void tty_scroll();
 void tty_write(const char *data, size_t size);
 void tty_writestring(const char *data);
+void tty_set_cursor();
 
 #ifdef __cplusplus
 }

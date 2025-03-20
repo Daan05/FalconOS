@@ -1,13 +1,10 @@
-#include "kernel/io_ports.h"
-#include "stdio.h"
+#include "timer.h"
 
-#define PIT_FREQUENCY 1000 // 1000 Hz
-
-static unsigned long long timerCount = 0;
+static uint64_t tickCount = 0;
 
 void timer_handler(uint8_t irq_num) {
-    printf("Tick: %d | %d\n", timerCount, irq_num);
-    timerCount++;
+    // printf("Tick: %d | %d\n", timerCount, irq_num);
+    tickCount++;
 }
 
 void timer_install() {
@@ -18,3 +15,7 @@ void timer_install() {
     outb(0x40, divisor & 0xFF);        // Low byte
     outb(0x40, (divisor >> 8) & 0xFF); // High byte
 }
+
+int getTimerFrequency() { return PIT_FREQUENCY; }
+
+uint64_t getTicks() { return tickCount; }

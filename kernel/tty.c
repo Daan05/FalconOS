@@ -1,8 +1,9 @@
-#include <kernel/tty.h>
+#include "kernel/tty.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 
+#include "kernel/io_ports.h"
 #include "vga.h"
 
 static const size_t VGA_WIDTH = 80;
@@ -44,12 +45,34 @@ void tty_putchar(char c) {
         return;
     }
 
+    if (c == '\b') {
+        tty_unputchar();
+        return;
+    }
+
     tty_putentryat(c, terminal_color, terminal_column, terminal_row);
     if (++terminal_column == VGA_WIDTH) {
         terminal_column = 0;
         if (++terminal_row == VGA_HEIGHT)
             terminal_row = 0;
     }
+}
+
+void tty_unputchar() {
+    terminal_column--;
+
+    if (terminal_column < 0) {
+        terminal_column = 79;
+        terminal_row--;
+        // this part is not working
+        while ((terminal_buffer[terminal_row * VGA_WIDTH + terminal_column] &
+                0x00ff) == ' ') {
+            terminal_column--;
+        }
+    }
+
+    tty_putchar(' ');
+    terminal_column--;
 }
 
 void tty_scroll() {
@@ -73,3 +96,11 @@ void tty_write(const char *data, size_t size) {
 }
 
 void tty_writestring(const char *data) { tty_write(data, strlen(data)); }
+
+void tty_set_cursor() {
+    uint16_t pos = terminal_row * VGA_WIDTH + terminal_column;
+    outb(0x3D4, 0x0F);
+    outb(0x3D5, (uint8_t)(pos & 0xFF));
+    outb(0x3D4, 0x0E);
+    outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
+}

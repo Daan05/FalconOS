@@ -1,15 +1,11 @@
 #include <stdint.h>
 #include "stdio.h"
-#include "timer.h"
-#include "keyboard.h"
+#include "drivers/timer.h"
 #include "kernel/io_ports.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-extern void irq0();
-extern void irq1();
 
 extern void isr0();
 extern void isr1();
@@ -69,9 +65,6 @@ void irq_handler(uint8_t irq_num) {
     case 0:
         timer_handler(irq_num);
         break;
-    case 1:
-        keyboard_handler(irq_num);
-        break;
         // ... handle other IRQs
     }
 
@@ -83,7 +76,6 @@ void irq_handler(uint8_t irq_num) {
 
 // Define IRQ handlers for timer (IRQ0) and keyboard (IRQ1)
 IRQ(0) // Timer
-IRQ(1) // Keyboard
 
 // Macro for ISRs without error codes
 #define ISR_NOERRCODE(num)                                                     \

@@ -6,11 +6,12 @@ LD = i686-elf-ld
 
 # Flags
 CXXFLAGS = -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -Ilibc/include -Ikernel/include
-CFLAGS = -ffreestanding -O2 -Wall -Wextra -Ilibc/include -Ikernel/include
+CFLAGS = -ffreestanding -O2 -Wall -Wextra -Ilibc/include -Ikernel/include -I.
 LDFLAGS = -T linker.ld -nostdlib -ffreestanding
 
 # Directories
-SRC_DIR = kernel
+KERNEL_DIR = kernel
+DRIVERS_DIR = drivers
 LIBC_DIR = libc
 ISO_DIR = isodir
 GRUB_CFG = $(ISO_DIR)/boot/grub/grub.cfg
@@ -18,14 +19,17 @@ OBJ_DIR = build
 
 # Files
 KERNEL_OBJS = \
-	$(OBJ_DIR)/boot.o \
-    $(OBJ_DIR)/kernel.o \
-    $(OBJ_DIR)/tty.o
+	$(OBJ_DIR)/kernel/boot.o \
+    $(OBJ_DIR)/kernel/kernel.o \
+    $(OBJ_DIR)/kernel/tty.o \
+    $(OBJ_DIR)/kernel/keyboard.o \
+	$(OBJ_DIR)/drivers/timer.o
 
 
 LIBC_OBJS = \
     $(OBJ_DIR)/libc/string/strlen.o \
-	$(OBJ_DIR)/libc/stdio/printf.o
+	$(OBJ_DIR)/libc/stdio/printf.o \
+	$(OBJ_DIR)/libc/stdio/putchar.o
 
 OBJS = $(LIBC_OBJS) $(KERNEL_OBJS)
 KERNEL_BIN = $(ISO_DIR)/boot/fos.bin
@@ -37,15 +41,28 @@ ISO_FILE = fos.iso
 all: $(ISO_FILE)
 
 # Compile kernel objects
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(OBJ_DIR)/kernel/%.o: $(KERNEL_DIR)/%.cpp
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/kernel/%.o: $(KERNEL_DIR)/%.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.s
+$(OBJ_DIR)/kernel/%.o: $(KERNEL_DIR)/%.s
+	mkdir -p $(dir $@)
+	$(AS) $< -o $@
+
+# Compile driver objects
+$(OBJ_DIR)/drivers/%.o: $(DRIVERS_DIR)/%.cpp
+	mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/drivers/%.o: $(DRIVERS_DIR)/%.c
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/drivers/%.o: $(DRIVERS_DIR)/%.s
 	mkdir -p $(dir $@)
 	$(AS) $< -o $@
 
