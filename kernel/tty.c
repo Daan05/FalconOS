@@ -34,6 +34,10 @@ void tty_putentryat(char c, uint8_t color, size_t x, size_t y) {
 }
 
 void tty_putchar(char c) {
+    if (terminal_row == VGA_HEIGHT) {
+        tty_scroll();
+    }
+
     if (c == '\n') {
         terminal_row++;
         terminal_column = 0;
@@ -57,9 +61,10 @@ void tty_scroll() {
     }
 
     for (size_t i = 0; i < VGA_WIDTH; i++) {
-        terminal_buffer[VGA_WIDTH * (VGA_HEIGHT - 1) + i]
-            = vga_entry(' ', terminal_color);
+        terminal_buffer[VGA_WIDTH * (VGA_HEIGHT - 1) + i] =
+            vga_entry(' ', terminal_color);
     }
+    terminal_row--;
 }
 
 void tty_write(const char *data, size_t size) {

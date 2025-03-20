@@ -1,0 +1,72 @@
+[
+ {
+  "directory": "/home/dhval/Dev/cpp/FalconOS",
+  "arguments": [
+   "i686-elf-gcc",
+   "-ffreestanding",
+   "-O2",
+   "-Wall",
+   "-Wextra",
+   "-Ilibc/include",
+   "-Ikernel/include",
+   "-c",
+   "libc/string/strlen.c",
+   "-o",
+   "build/libc/string/strlen.o"
+  ],
+  "file": "libc/string/strlen.c"
+ },
+ {
+  "directory": "/home/dhval/Dev/cpp/FalconOS",
+  "arguments": [
+   "i686-elf-gcc",
+   "-ffreestanding",
+   "-O2",
+   "-Wall",
+   "-Wextra",
+   "-Ilibc/include",
+   "-Ikernel/include",
+   "-c",
+   "libc/stdio/printf.c",
+   "-o",
+   "build/libc/stdio/printf.o"
+  ],
+  "file": "libc/stdio/printf.c"
+ },
+ {
+  "directory": "/home/dhval/Dev/cpp/FalconOS",
+  "arguments": [
+   "i686-elf-g++",
+   "-ffreestanding",
+   "-O2",
+   "-Wall",
+   "-Wextra",
+   "-fno-exceptions",
+   "-fno-rtti",
+   "-Ilibc/include",
+   "-Ikernel/include",
+   "-c",
+   "kernel/kernel.cpp",
+   "-o",
+   "build/kernel.o"
+  ],
+  "file": "kernel/kernel.cpp"
+ },
+ {
+  "directory": "/home/dhval/Dev/cpp/FalconOS",
+  "arguments": [
+   "i686-elf-gcc",
+   "-ffreestanding",
+   "-O2",
+   "-Wall",
+   "-Wextra",
+   "-Ilibc/include",
+   "-Ikernel/include",
+   "-c",
+   "kernel/tty.c",
+   "-o",
+   "build/tty.o"
+  ],
+  "file": "kernel/tty.c"
+ }
+]
