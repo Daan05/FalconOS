@@ -1,2 +1,20 @@
-# FalconOS
+<H1> FalconOS </H1>
+
  64 bit kernel that gets loaded by limine and actually works on real hardware
+
+
+
+ <H1> How to run </H1>
+ 
+ <H3> dependencies </H3>
+ 
+  - make
+  - 64 bit cross compiler (x86_64-elf-gcc)
+  - qemu
+  - git
+  - curl
+  - sgdisk
+
+<H3> commands </H3>
+
+`make` will build all files needed to run the kernel in a virtual machine or on real hardware. `make run` build the kernel and runs it in a virtual machine. `make clean` will delete all binary files, it will not delete `ovmf/` amd `limine/`
