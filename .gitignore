@@ -3,3 +3,6 @@ limine/
 *.hdd
 *.iso
 *.o
+*.bin/
+*.obj/
+*.elf

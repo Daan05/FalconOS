@@ -30,6 +30,7 @@ limine/limine:
 
 .PHONY: kernel
 kernel:
+	make -C limine
 	make -C libc
 	make -C kernel
 

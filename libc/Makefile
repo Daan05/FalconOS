@@ -12,7 +12,7 @@ override CFLAGS += \
 # Internal C preprocessor flags that should not be changed by the user.
 override CPPFLAGS := \
     -I src \
-	-I ../include
+	-I include
 
 override SRCFILES := $(shell cd src && find -L * -type f | LC_ALL=C sort)
 override CFILES := $(filter %.c,$(SRCFILES))
