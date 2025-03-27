@@ -48,6 +48,7 @@ $(IMAGE_NAME).hdd: limine/limine kernel
 
 .PHONY: clean
 clean:
+	make -C limine clean
 	make -C libc clean
 	make -C kernel clean
 	rm -rf iso_root $(IMAGE_NAME).hdd
