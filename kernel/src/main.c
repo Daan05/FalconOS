@@ -1,4 +1,6 @@
 #include "framebuffer.h"
+#include "idt.h"
+#include "timer.h"
 
 // Halt and catch fire function.
 static void hcf(void) {
@@ -9,14 +11,20 @@ static void hcf(void) {
 
 void kernel_main(void) {
   if (!initialize_framebuffer()) {
-    return;
+    hcf();
   }
 
-  draw_string(0, 0,
-              "The quick brown fox jumps over the lazy dog.,?![](){} 1 2 3 4 5 "
-              "6 7 8 9 9 / * - + \\ @ # $ % ^ & <>:; \"'| ~ ` iIlL",
-              0xff0000);
+  draw_string(0, 0, "Initializing IDT...", 0xff0000);
+  idt_init();
+  draw_string(0, 16, "IDT initialized.", 0xff0000);
 
-  // We're done, just hang...
+  draw_string(0, 32, "Initializing timer...", 0xff0000);
+  timer_init(100); // 100 Hz
+  draw_string(0, 48, "Timer initialized.", 0xff0000);
+
+  asm volatile("sti");
+
+  draw_string(0, 64, "Initializations finished.", 0xff0000);
+
   hcf();
 }
