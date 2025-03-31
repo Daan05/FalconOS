@@ -1,4 +1,4 @@
-#include "framebuffer.h"
+#include "drivers/framebuffer.h"
 
 // Halt and catch fire function.
 static void hcf(void) {

@@ -1,5 +1,5 @@
-#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
+#ifndef DRIVERS_FRAMEBUFFER_H
+#define DRIVERS_FRAMEBUFFER_H
 
 #include <limine.h>
 #include <stdbool.h>

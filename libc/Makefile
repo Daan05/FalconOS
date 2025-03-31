@@ -14,7 +14,7 @@ override CPPFLAGS := \
     -I src \
 	-I include
 
-override SRCFILES := $(shell cd src && find -L * -type f | LC_ALL=C sort)
+override SRCFILES := $(shell find -L * -type f | LC_ALL=C sort)
 override CFILES := $(filter %.c,$(SRCFILES))
 override OBJ := $(addprefix obj/,$(CFILES:.c=.c.o))
 
@@ -23,7 +23,7 @@ override OBJ := $(addprefix obj/,$(CFILES:.c=.c.o))
 all: $(OBJ)
 
 # Compilation rules for *.c files.
-obj/%.c.o: src/%.c 
+obj/%.c.o: %.c 
 	mkdir -p "$$(dirname $@)"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
