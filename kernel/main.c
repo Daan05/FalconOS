@@ -1,5 +1,5 @@
-#include "cpu/isr.h"
 #include "drivers/framebuffer.h"
+#include "interrupts/idt.h"
 
 // Halt and catch fire function.
 static void hcf(void) {
@@ -9,15 +9,16 @@ static void hcf(void) {
 }
 
 void kernel_main(void) {
-  isr_install();
-
   if (!initialize_framebuffer()) {
     hcf();
   }
+  draw_string(16, 16, "framebuffer initialized", 0xffffff);
 
-  isr_4();
+  init_idt();
+  draw_string(16, 32, "IDT Initialized", 0xffffff);
 
-  draw_string(32, 32, "Hello from kernel...", 0xff0000);
-
+  draw_string(16, 48, "HANGING....", 0xffffff);
   hcf();
 }
+
+// https: // github.com/RickleAndMortimer/MakenOS?tab=0BSD-1-ov-file

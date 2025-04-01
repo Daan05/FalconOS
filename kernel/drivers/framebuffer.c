@@ -163,6 +163,16 @@ void draw_string(int x, int y, const char *str, uint32_t color) {
   }
 }
 
+void clear_screen(uint32_t color) {
+  struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
+
+  for (size_t y = 0; y < fb->height; y++) {
+    for (size_t x = 0; x < fb->width; x++) {
+      putpixel(x, y, color);
+    }
+  }
+}
+
 int initialize_framebuffer() {
   // Ensure the bootloader actually understands our base revision (see spec).
   if (LIMINE_BASE_REVISION_SUPPORTED == false) {
@@ -179,11 +189,7 @@ int initialize_framebuffer() {
   struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
 
   // Clear the screen to dark gray
-  for (size_t y = 0; y < fb->height; y++) {
-    for (size_t x = 0; x < fb->width; x++) {
-      putpixel(x, y, 0x101010); // dark gray
-    }
-  }
+  clear_screen(0x101010);
 
   return 1;
 }
