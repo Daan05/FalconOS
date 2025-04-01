@@ -13,7 +13,7 @@
   - qemu
   - git
   - curl
-  - sgdisk
+  - sgdisk (gptfdisk)
 
 <H3> commands </H3>
 
