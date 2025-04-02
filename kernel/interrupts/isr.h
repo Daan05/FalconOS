@@ -11,8 +11,8 @@ typedef struct InterruptFrame {
   uint64_t rsp, rflags, cs, rip;
 } __attribute__((packed)) InterruptFrame;
 
-void exceptionHandler(InterruptFrame *frame);
-void irqHandler(InterruptFrame *frame);
-void registerInterruptHandler(uint8_t irq, void (*handler)(InterruptFrame *));
+void exception_handler(InterruptFrame *frame);
+void irq_handler(InterruptFrame *frame);
+void register_interrupt_handler(uint8_t irq, void (*handler)(InterruptFrame *));
 
 #endif

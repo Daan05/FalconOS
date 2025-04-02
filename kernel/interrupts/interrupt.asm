@@ -1,5 +1,5 @@
-extern exceptionHandler
-extern irqHandler
+extern exception_handler
+extern irq_handler
 
 %macro pushad 0
     push rax      
@@ -29,7 +29,7 @@ isr_common_stub:
     pushad
     cld 
     lea rdi, [rsp]
-    call exceptionHandler
+    call exception_handler
     popad
     add rsp, 0x10 
     iretq
@@ -84,7 +84,7 @@ irq_common_stub:
     pushad
     cld
     lea rdi, [rsp]
-    call irqHandler
+    call irq_handler
     popad
     add rsp, 0x10
     iretq

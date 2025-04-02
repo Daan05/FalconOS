@@ -4,22 +4,21 @@
 
 void (*interrupt_handlers[256])(InterruptFrame *frame);
 
-void exceptionHandler(InterruptFrame *frame) {
-  terminal_set_foreground_color(0xff0000);
-  terminal_printf("INTERRUPT >> int_no: %d, err_code: %d\n", frame->int_no,
+void exception_handler(InterruptFrame *frame) {
+  terminal_printf("CPU exception | int_no: %d, err_code: %d\n", frame->int_no,
                   frame->err_code);
-  terminal_set_foreground_color(0xffffff);
 }
 
-void registerInterruptHandler(uint8_t interrupt,
-                              void (*handler)(InterruptFrame *frame)) {
-  interrupt_handlers[interrupt] = handler;
-}
-
-void irqHandler(InterruptFrame *frame) {
-  if (&interrupt_handlers[frame->int_no] != NULL) {
+void irq_handler(InterruptFrame *frame) {
+  if (interrupt_handlers[frame->int_no] != NULL) {
     interrupt_handlers[frame->int_no](frame);
+    terminal_printf("handler is registered | int_no %d\n", frame->int_no);
+  } else {
+    terminal_printf("handler is not registered | int_no %d\n", frame->int_no);
   }
+}
 
-  terminal_printf("some interrupt 32-255\n");
+void register_interrupt_handler(uint8_t interrupt,
+                                void (*handler)(InterruptFrame *frame)) {
+  interrupt_handlers[interrupt] = handler;
 }
