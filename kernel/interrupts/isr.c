@@ -5,8 +5,6 @@
 void (*interrupt_handlers[256])(InterruptFrame *frame);
 
 void exceptionHandler(InterruptFrame *frame) {
-  // printNumber(frame->int_no);
-  // printNumber(frame->err_code);
   terminal_set_foreground_color(0xff0000);
   terminal_printf("INTERRUPT >> int_no: %d, err_code: %d\n", frame->int_no,
                   frame->err_code);
