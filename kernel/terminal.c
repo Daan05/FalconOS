@@ -2,8 +2,8 @@
 
 #include "drivers/framebuffer.h"
 
-static int terminal_x;
 static int terminal_y;
+static int terminal_x;
 static int terminal_width;
 static int terminal_height;
 static uint32_t foreground_color;
@@ -17,13 +17,14 @@ int init_terminal() {
 
   struct limine_framebuffer *fb = get_framebuffer();
 
-  terminal_x = PIXELS_PER_CHARACTER;
   terminal_y = PIXELS_PER_CHARACTER;
+  terminal_x = PIXELS_PER_CHARACTER;
   terminal_width = fb->width - (fb->width % PIXELS_PER_CHARACTER);
   terminal_height = fb->height - (fb->height % (PIXELS_PER_CHARACTER + 2));
   foreground_color = 0xffffff; // white
   background_color = 0x101010; // darkgray
 
+  clear_screen(background_color);
   terminal_printf("TERMINAL:\n    width: %d\n    heigth: "
                   "%d\n    foreground: %X\n    background: %X\n\n",
                   terminal_width, terminal_height, foreground_color,
@@ -36,13 +37,13 @@ void terminal_set_foreground_color(uint32_t color) { foreground_color = color; }
 void terminal_set_background_color(uint32_t color) { background_color = color; }
 
 void terminal_putchar(char c) {
-  if (terminal_x == terminal_height) {
+  if (terminal_y == terminal_height) {
     terminal_scroll_down(1);
   }
 
   if (c == '\n') {
-    terminal_x += PIXELS_PER_CHARACTER + 2;
-    terminal_y = PIXELS_PER_CHARACTER;
+    terminal_y += PIXELS_PER_CHARACTER + 2;
+    terminal_x = PIXELS_PER_CHARACTER;
     return;
   }
 
@@ -51,17 +52,25 @@ void terminal_putchar(char c) {
     return;
   }
 
-  draw_char(terminal_y, terminal_x, c, foreground_color);
-  terminal_y += PIXELS_PER_CHARACTER;
-  if (terminal_y == terminal_width) {
-    terminal_y = PIXELS_PER_CHARACTER;
-    terminal_x += PIXELS_PER_CHARACTER + 2;
-    if (terminal_x == terminal_height)
-      terminal_x = PIXELS_PER_CHARACTER;
+  draw_char(terminal_x, terminal_y, c, foreground_color);
+  terminal_x += PIXELS_PER_CHARACTER;
+  if (terminal_x == terminal_width) {
+    terminal_x = PIXELS_PER_CHARACTER;
+    terminal_y += PIXELS_PER_CHARACTER + 2;
+    if (terminal_y == terminal_height)
+      terminal_y = PIXELS_PER_CHARACTER;
   }
 }
 
-void terminal_unputchar() {}
+void terminal_unputchar() {
+  terminal_x -= PIXELS_PER_CHARACTER;
+
+  for (int y = 0; y < 8; y++) {
+    for (int x = 0; x < 8; x++) {
+      putpixel(terminal_x + x, terminal_y + y, background_color);
+    }
+  }
+}
 
 static void print_string(const char *str) {
   while (*str) {

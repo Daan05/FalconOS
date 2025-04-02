@@ -188,8 +188,8 @@ int init_framebuffer() {
   // Fetch the first framebuffer.
   struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
 
-  // Clear the screen to dark gray
-  clear_screen(0x101010);
+  // Clear the screen
+  clear_screen(0x000000);
 
   return 1;
 }
