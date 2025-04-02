@@ -173,7 +173,7 @@ void clear_screen(uint32_t color) {
   }
 }
 
-int initialize_framebuffer() {
+int init_framebuffer() {
   // Ensure the bootloader actually understands our base revision (see spec).
   if (LIMINE_BASE_REVISION_SUPPORTED == false) {
     return 0;
@@ -192,4 +192,8 @@ int initialize_framebuffer() {
   clear_screen(0x101010);
 
   return 1;
+}
+
+struct limine_framebuffer *get_framebuffer() {
+  return framebuffer_request.response->framebuffers[0];
 }

@@ -1,5 +1,5 @@
-#include "drivers/framebuffer.h"
 #include "interrupts/idt.h"
+#include "terminal.h"
 
 // Halt and catch fire function.
 static void hcf(void) {
@@ -9,15 +9,18 @@ static void hcf(void) {
 }
 
 void kernel_main(void) {
-  if (!initialize_framebuffer()) {
+  if (!init_terminal()) {
+    // couldn't get a framebuffer
     hcf();
   }
-  draw_string(16, 16, "framebuffer initialized", 0xffffff);
+  terminal_printf("terminal initialized\n2nd line");
 
+  // enable interrupts
   init_idt();
-  draw_string(16, 32, "IDT Initialized", 0xffffff);
+  terminal_printf("IDT initialized\n");
 
-  draw_string(16, 48, "HANGING....", 0xffffff);
+  // hanging
+  terminal_printf("hanging...\n");
   hcf();
 }
 
