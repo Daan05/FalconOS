@@ -13,7 +13,7 @@ void kernel_main(void) {
     // couldn't get a framebuffer
     hcf();
   }
-  terminal_printf("terminal initialized\n2nd line");
+  terminal_printf("terminal initialized\n");
 
   // enable interrupts
   init_idt();
