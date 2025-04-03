@@ -19,7 +19,7 @@ void remap_pic() {
   outb(0x21, 0x01);
   outb(0xA1, 0x01);
 
-  // Mask all interrupts except PIT (IRQ0)
-  outb(0x21, 0xFE); // 0xFE = 11111110 (only IRQ0 unmasked)
-  outb(0xA1, 0xFF); // Mask all slave IRQs
+  // Mask all interrupts except PIT(IRQ0) and Keyboard(IRQ1)
+  outb(0x21, 0xFC); // 0xFC = 11111100 (unmask IRQ0 and IRQ1)
+  outb(0xA1, 0xFF); // Mask all slave IRQs (0xFF = 11111111)
 }

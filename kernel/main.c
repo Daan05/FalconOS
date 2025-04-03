@@ -1,3 +1,4 @@
+#include "devices/keyboard.h"
 #include "devices/pic.h"
 #include "devices/pit.h"
 #include "interrupts/idt.h"
@@ -25,6 +26,8 @@ void kernel_main(void) {
     terminal_printf("invalid frequency\n");
     hcf();
   }
+
+  init_keyboard();
 
   // enable interrupts
   init_idt();
