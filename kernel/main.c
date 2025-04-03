@@ -1,3 +1,5 @@
+#include "devices/pic.h"
+#include "devices/pit.h"
 #include "interrupts/idt.h"
 #include "terminal.h"
 
@@ -15,12 +17,20 @@ void kernel_main(void) {
   }
   terminal_printf("terminal initialized\n");
 
+  // remap pic
+  remap_pic();
+
+  // init timer
+  if (!init_pit(1000)) { // 1000hz
+    terminal_printf("invalid frequency\n");
+    hcf();
+  }
+
   // enable interrupts
   init_idt();
   terminal_printf("IDT initialized\n");
 
   // hanging
-  terminal_printf("hanging...\n");
   hcf();
 }
 

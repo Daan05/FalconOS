@@ -12,7 +12,7 @@ void exception_handler(InterruptFrame *frame) {
 void irq_handler(InterruptFrame *frame) {
   if (interrupt_handlers[frame->int_no] != NULL) {
     interrupt_handlers[frame->int_no](frame);
-    terminal_printf("handler is registered | int_no %d\n", frame->int_no);
+    // terminal_printf("handler is registered | int_no %d\n", frame->int_no);
   } else {
     terminal_printf("handler is not registered | int_no %d\n", frame->int_no);
   }
