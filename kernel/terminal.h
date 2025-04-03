@@ -13,7 +13,7 @@ void terminal_set_background_color(uint32_t color);
 void terminal_putchar(char c);
 void terminal_unputchar();
 void terminal_printf(const char *str, ...);
-void terminal_scroll_down(int lineCount);
-void terminal_scroll_up(int lineCount);
+void terminal_scroll_down(int num_lines);
+void terminal_scroll_up(int num_lines);
 
 #endif

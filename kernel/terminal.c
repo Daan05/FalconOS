@@ -2,6 +2,8 @@
 
 #include "drivers/framebuffer.h"
 
+#include "string.h"
+
 static int terminal_y;
 static int terminal_x;
 static int terminal_width;
@@ -25,10 +27,11 @@ int init_terminal() {
   background_color = 0x101010; // darkgray
 
   clear_screen(background_color);
-  terminal_printf("TERMINAL:\n    width: %d\n    heigth: "
-                  "%d\n    foreground: %X\n    background: %X\n\n",
-                  terminal_width, terminal_height, foreground_color,
-                  background_color);
+  terminal_printf(
+      "TERMINAL:\n    width: %d\n    heigth: "
+      "%d\n    foreground: %X\n    background: %X\n    fb pitch: %d\n\n",
+      terminal_width, terminal_height, foreground_color, background_color,
+      fb->pitch);
 
   return 1;
 }
@@ -37,7 +40,7 @@ void terminal_set_foreground_color(uint32_t color) { foreground_color = color; }
 void terminal_set_background_color(uint32_t color) { background_color = color; }
 
 void terminal_putchar(char c) {
-  if (terminal_y == terminal_height) {
+  if (terminal_y >= terminal_height - PIXELS_PER_CHARACTER) {
     terminal_scroll_down(1);
   }
 
@@ -57,8 +60,6 @@ void terminal_putchar(char c) {
   if (terminal_x == terminal_width) {
     terminal_x = PIXELS_PER_CHARACTER;
     terminal_y += PIXELS_PER_CHARACTER + 2;
-    if (terminal_y == terminal_height)
-      terminal_y = PIXELS_PER_CHARACTER;
   }
 }
 
@@ -188,5 +189,40 @@ void terminal_printf(const char *format, ...) {
   va_end(args);
 }
 
-void terminal_scroll_down(int numLines) { return; }
+void terminal_scroll_down(int num_lines) {
+  // Calculate pixel dimensions
+  int line_height = PIXELS_PER_CHARACTER + 2; // Your character height + spacing
+  int scroll_pixels = num_lines * line_height;
+
+  // Get framebuffer info
+  struct limine_framebuffer *fb = get_framebuffer();
+  uint32_t *fb_base = fb->address;
+  uint32_t pitch_32 = fb->pitch / 4; // Pitch in 32-bit words
+
+  // Calculate scroll region bounds
+  int start_y = PIXELS_PER_CHARACTER; // Skip initial margin
+  int end_y = terminal_height - scroll_pixels;
+
+  // Scroll the content up (move everything up by scroll_pixels)
+  for (int y = start_y; y < end_y; y++) {
+    uint32_t *src_row = &fb_base[(y + scroll_pixels) * pitch_32];
+    uint32_t *dest_row = &fb_base[y * pitch_32];
+    memcpy(dest_row, src_row, terminal_width * sizeof(uint32_t));
+  }
+
+  // Clear the newly exposed area at the bottom
+  for (int y = end_y; y < terminal_height; y++) {
+    uint32_t *row = &fb_base[y * pitch_32];
+    for (int x = 0; x < terminal_width; x++) {
+      row[x] = background_color;
+    }
+  }
+
+  // Adjust cursor position
+  terminal_y -= scroll_pixels;
+  if (terminal_y < PIXELS_PER_CHARACTER) {
+    terminal_y = PIXELS_PER_CHARACTER;
+  }
+}
+
 void terminal_scroll_up(int numLines) { return; }

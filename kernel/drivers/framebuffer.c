@@ -1,4 +1,7 @@
 #include "framebuffer.h"
+#include "string.h"
+
+#define MAX_BATCH_WIDTH 4096
 
 // Set the base revision to 3, this is recommended as this is the latest
 // base revision described by the Limine boot protocol specification.
@@ -25,10 +28,9 @@ __attribute__((used,
                section(".limine_requests_"
                        "start"))) static volatile LIMINE_REQUESTS_START_MARKER;
 
-__attribute__((
-    used,
-    section(
-        ".limine_requests_end"))) static volatile LIMINE_REQUESTS_END_MARKER;
+__attribute__((used,
+               section(".limine_requests_"
+                       "end"))) static volatile LIMINE_REQUESTS_END_MARKER;
 
 static const uint8_t font[128][8] = {
     [0x20] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // Space
@@ -133,11 +135,15 @@ static const uint8_t font[128][8] = {
     [0x7F] = {0x3E, 0x63, 0x55, 0x49, 0x55, 0x63, 0x3E, 0x00}, // DEL (Custom)
 };
 
+static struct limine_framebuffer *fb;
+static int32_t pitch_32;
+static uint32_t pixel_buffer[MAX_BATCH_WIDTH]; // change to malloc() once i have
+                                               // malloc implemented
+
 // Function to draw a pixel at (x, y)
 void putpixel(int x, int y, uint32_t color) {
-  struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
   uint32_t *pixels = fb->address;
-  pixels[y * (fb->pitch / 4) + x] = color;
+  pixels[y * pitch_32 + x] = color;
 }
 
 // Function to draw a character
@@ -154,23 +160,34 @@ void draw_char(int x, int y, unsigned char c, uint32_t color) {
   }
 }
 
-// Function to draw a string
-void draw_string(int x, int y, const char *str, uint32_t color) {
-  while (*str) {
-    draw_char(x, y, *str, color);
-    x += 8; // Move to next character position
-    str++;
+void draw_hline(int x, int y, int width, uint32_t color) {
+  uint32_t *pixels = fb->address;
+  uint32_t *dest = &pixels[y * pitch_32 + x];
+
+  for (int i = 0; i < width; i++) {
+    pixel_buffer[i] = color;
+  }
+
+  // batch copy
+  memcpy(dest, pixel_buffer, width * sizeof(uint32_t));
+}
+
+void fill_rect(int x, int y, int width, int height, uint32_t color) {
+  uint32_t *pixels = fb->address;
+
+  for (int i = 0; i < width; i++) {
+    pixel_buffer[i] = color;
+  }
+
+  // Copy to each row
+  for (int row = 0; row < height; row++) {
+    uint32_t *dest = &pixels[(y + row) * pitch_32 + x];
+    memcpy(dest, pixel_buffer, width * sizeof(uint32_t));
   }
 }
 
 void clear_screen(uint32_t color) {
-  struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
-
-  for (size_t y = 0; y < fb->height; y++) {
-    for (size_t x = 0; x < fb->width; x++) {
-      putpixel(x, y, color);
-    }
-  }
+  fill_rect(0, 0, fb->width, fb->height, color);
 }
 
 int init_framebuffer() {
@@ -186,7 +203,12 @@ int init_framebuffer() {
   }
 
   // Fetch the first framebuffer.
-  struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
+  fb = framebuffer_request.response->framebuffers[0];
+  pitch_32 = fb->pitch / 4;
+
+  if (fb->width > MAX_BATCH_WIDTH) {
+    return 0;
+  }
 
   // Clear the screen
   clear_screen(0x000000);
@@ -194,6 +216,4 @@ int init_framebuffer() {
   return 1;
 }
 
-struct limine_framebuffer *get_framebuffer() {
-  return framebuffer_request.response->framebuffers[0];
-}
+struct limine_framebuffer *get_framebuffer() { return fb; }
