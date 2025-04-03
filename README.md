@@ -18,3 +18,9 @@
 <H3> commands </H3>
 
 `make` will build all files needed to run the kernel in a virtual machine or on real hardware. `make run` build the kernel and runs it in a virtual machine. `make clean` will delete all binary files, it will not delete `ovmf/` and `limine/`. To count all lines in the FalconOS project run `find . -type f \( -name '*.c' -o -name '*.h' -o -name Makefile -o -name *.asm \) -not -path '*limine*' | xargs wc -l`
+
+<H1> To do </H1>
+
+- IRQs (keyboard, timer, etc.)
+- AVX
+- 
