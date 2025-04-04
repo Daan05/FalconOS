@@ -33,7 +33,6 @@ kernel:
 	make -C limine
 	make -C libc
 	make -C kernel
-	make -C pong
 
 $(IMAGE_NAME).hdd: limine/limine kernel
 	rm -f $(IMAGE_NAME).hdd
@@ -43,7 +42,6 @@ $(IMAGE_NAME).hdd: limine/limine kernel
 	mformat -i $(IMAGE_NAME).hdd@@1M
 	mmd -i $(IMAGE_NAME).hdd@@1M ::/EFI ::/EFI/BOOT ::/boot ::/boot/limine
 	mcopy -i $(IMAGE_NAME).hdd@@1M kernel/obj/kernel.elf ::/boot
-	mcopy -i $(IMAGE_NAME).hdd@@1M pong/obj/pong.elf ::/boot
 	mcopy -i $(IMAGE_NAME).hdd@@1M limine.conf limine/limine-bios.sys ::/boot/limine
 	mcopy -i $(IMAGE_NAME).hdd@@1M limine/BOOTX64.EFI ::/EFI/BOOT
 	mcopy -i $(IMAGE_NAME).hdd@@1M limine/BOOTIA32.EFI ::/EFI/BOOT
@@ -53,5 +51,4 @@ clean:
 	make -C limine clean
 	make -C libc clean
 	make -C kernel clean
-	make -C pong clean
 	rm -rf $(IMAGE_NAME).hdd
