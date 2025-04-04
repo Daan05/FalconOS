@@ -9,7 +9,7 @@ void timer_handler(InterruptFrame *frame) {
   static uint64_t timer_ticks = 0;
   timer_ticks++;
 
-  update_paddles();
+  update_game();
 
   outb(0x20, 0x20); // PIC EOI
 }

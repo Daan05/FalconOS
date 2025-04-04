@@ -10,6 +10,7 @@ static uint32_t paddle_width;
 static uint32_t paddle_height;
 static struct paddle lp;
 static struct paddle rp;
+static struct ball b;
 static int key_lu_down;
 static int key_ld_down;
 static int key_ru_down;
@@ -27,6 +28,12 @@ void init_pong() {
   rp.x = fb->width - paddle_width;
   rp.y = lp.y;
   rp.color = lp.color;
+  b.x = fb->width / 2;
+  b.y = fb->height / 2;
+  b.vel_x = -4;
+  b.vel_y = 0;
+  b.radius = paddle_width;
+  b.color = 0xffffff;
   key_lu_down = 0;
   key_ld_down = 0;
   key_ru_down = 0;
@@ -35,7 +42,7 @@ void init_pong() {
   clear_screen(background_color);
 }
 
-void update_paddles() {
+void update_game() {
   // update left paddle
   // undraw
   fill_rect(lp.x, lp.y, paddle_width, paddle_height, background_color);
@@ -61,6 +68,42 @@ void update_paddles() {
   }
   // redraw
   fill_rect(rp.x, rp.y, paddle_width, paddle_height, rp.color);
+
+  // undraw ball
+  draw_circle(b.x, b.y, b.radius, background_color);
+  // move
+  b.x += b.vel_x;
+  b.y += b.vel_y;
+  // check bounds
+  if (b.x < b.radius) { // left side
+    if (b.y > lp.y && b.y < lp.y + paddle_height) {
+      b.x = b.radius;
+      b.vel_x *= -1;
+    } else {
+      // stop the game
+      for (;;) {
+      }
+    }
+  }
+  if (b.x > fb->width - b.radius) { // right side
+    // if (b.y > rp.y && b.y < rp.y + paddle_height) {
+    // b.x = fb->width - b.radius;
+    // b.vel_x *= -1;
+    // }
+  }
+  if (b.y < b.radius) { // top side
+    b.y = b.radius;
+    b.vel_y *= -1;
+  }
+  if (b.y > fb->height - b.radius) { // down side
+    // what the heck is wrong with these two lines
+    // how do they cause a crash???
+    // b.y = fb->height - b.radius;
+    // b.vel_y = -b.vel_y;
+  }
+
+  //  redraw
+  draw_circle(b.x, b.y, b.radius, b.color);
 }
 
 void set_key_lu_down(int a) { key_lu_down = a; }

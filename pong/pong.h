@@ -4,12 +4,18 @@
 #include <stdint.h>
 
 struct paddle {
-  int32_t x, y;
+  int x, y;
+  uint32_t color;
+};
+
+struct ball {
+  int x, y, radius;
+  int vel_x, vel_y;
   uint32_t color;
 };
 
 void init_pong();
-void update_paddles();
+void update_game();
 
 void set_key_lu_down(int a);
 void set_key_ld_down(int a);

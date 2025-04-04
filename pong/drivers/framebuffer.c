@@ -172,6 +172,16 @@ void draw_hline(int x, int y, int width, uint32_t color) {
   memcpy(dest, pixel_buffer, width * sizeof(uint32_t));
 }
 
+void draw_circle(int x, int y, int radius, uint32_t color) {
+  for (int r = -radius; r < radius; r++) {
+    for (int c = -radius; c < radius; c++) {
+      if (c * c + r * r <= radius * radius) {
+        putpixel(x + c, y + r, color);
+      }
+    }
+  }
+}
+
 void fill_rect(int x, int y, int width, int height, uint32_t color) {
   uint32_t *pixels = fb->address;
 
