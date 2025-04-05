@@ -1,7 +1,9 @@
+#include "cpu_info.h"
 #include "devices/keyboard.h"
 #include "devices/pic.h"
 #include "devices/pit.h"
 #include "interrupts/idt.h"
+#include "memory/mem.h"
 #include "terminal.h"
 
 // Halt and catch fire function.
@@ -32,6 +34,10 @@ void kernel_main(void) {
   // enable interrupts
   init_idt();
   terminal_printf("IDT initialized\n");
+
+  terminal_printf("total usable memory: %u bytes\n", get_total_usable_memory());
+
+  detect_cpu();
 
   // hanging
   hcf();
