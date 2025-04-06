@@ -12,6 +12,7 @@ run: ovmf/ovmf-code-x86_64.fd $(IMAGE_NAME).hdd
 		-M q35 \
 		-drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-x86_64.fd,readonly=on \
 		-hda $(IMAGE_NAME).hdd \
+		-monitor stdio \
 		$(QEMUFLAGS)
 
 ovmf/ovmf-code-x86_64.fd:
