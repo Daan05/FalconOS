@@ -5,7 +5,10 @@
 
 
  <H1> How to run </H1>
- 
+
+- Put one foot in front of the other
+- Repeat
+
  <H3> dependencies </H3>
  
   - make
@@ -17,7 +20,11 @@
 
 <H3> commands </H3>
 
-`make` will build all files needed to run the kernel in a virtual machine or on real hardware. `make run` build the kernel and runs it in a virtual machine. `make clean` will delete all binary files, it will not delete `ovmf/` and `limine/`. To count all lines in the FalconOS project run `find . -type f \( -name '*.c' -o -name '*.h' -o -name Makefile -o -name *.asm \) -not -path '*limine*' | xargs wc -l`
+`make` will build all files needed to run the kernel in a virtual machine or on real hardware.
+`make run` is same as `make` and runs it in a virtual machine.
+`make clean` will delete all binary files, it will not delete `ovmf/` and `limine/`.
+`make deepclean` is same as `make clean`, but will also delete `ovmf/` and `limine/`.
+`make lines` will print all lines per source file and also total line count.
 
 <H1> Finished </H1>
 
