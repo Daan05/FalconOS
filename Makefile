@@ -53,3 +53,12 @@ clean:
 	make -C libc clean
 	make -C kernel clean
 	rm -rf $(IMAGE_NAME).hdd
+
+.PHONY: deepclean
+deepclean: clean
+	rm -rf ovmf/ limine/
+
+.PHONY: lines
+lines:
+	find . -type f \( -name '*.c' -o -name '*.h' -o -name Makefile -o -name *.asm \) -not -path '*limine*' | xargs wc -l
+
